@@ -17,11 +17,13 @@ public class SearchRepositoryImplement implements SearchRepository{
     @Autowired
     MongoClient mongoClient;
 
+    final String DATA_BASE = "urlShortner"; // TO BE CONFIGURED
+
     @Override
     public List<String> findByShortUrl(String shortUrl) {
         final List<String> ans = new ArrayList<>();
 
-        MongoDatabase database = mongoClient.getDatabase("newDB");
+        MongoDatabase database = mongoClient.getDatabase(DATA_BASE);
         MongoCollection<Document> collection = database.getCollection("Urls");
 
         AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match", new Document("shortUrl", shortUrl))));
@@ -38,7 +40,7 @@ public class SearchRepositoryImplement implements SearchRepository{
     public List<String> findByLongUrl(String longUrl){
         final List<String> ans = new ArrayList<>();
 
-        MongoDatabase database = mongoClient.getDatabase("newDB");
+        MongoDatabase database = mongoClient.getDatabase(DATA_BASE);
         MongoCollection<Document> collection = database.getCollection("Urls");
 
         AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match", new Document("longUrl", longUrl))));
@@ -55,7 +57,7 @@ public class SearchRepositoryImplement implements SearchRepository{
     public String findTargetUrl(String key){
         final List<String> ans = new ArrayList<>();
 
-        MongoDatabase database = mongoClient.getDatabase("newDB");
+        MongoDatabase database = mongoClient.getDatabase(DATA_BASE);
         MongoCollection<Document> collection = database.getCollection("Urls");
 
         AggregateIterable<Document> result = collection.aggregate(Arrays.asList(new Document("$match", new Document("shortUrl", key))));
