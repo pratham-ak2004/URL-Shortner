@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static com.urlshotener.url.shortner.hashing.CustomBase62.encodeBase62;
 
 @Component
 public class UniqueHasing {
@@ -21,19 +21,8 @@ public class UniqueHasing {
     @Autowired
     private SearchRepository searchRepository;
 
-    private static ArrayList<Character> hashMap = new ArrayList<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'));
 
-    private static  String hashShortner(String hash){
-        String ans = "";
-        short val;
-        for(int i = 0 ; i < hash.length() ; i += 2){
-            val = (short) ((hashMap.indexOf(hash.charAt(i)) + hashMap.indexOf(hash.charAt(i+1))));
-            val = (short) (val%62);
-            ans += hashMap.get(val);
-        }
-        return ans;
-    }
-
+    // Crypto hashing MD5
     private static String generateBase62Hash(String message) throws Exception{
         MessageDigest digester = MessageDigest.getInstance("MD5");
         byte[] md5Result = digester.digest(message.getBytes());
@@ -46,7 +35,8 @@ public class UniqueHasing {
             hashtext = "0" + hashtext;
         }
 
-        return hashShortner(hashtext);
+        // Hash shortner base62
+        return encodeBase62(hashtext.getBytes());
 
     }
 
@@ -76,6 +66,4 @@ public class UniqueHasing {
         System.out.println("Saved url : " + url);
         return newHashString;
     }
-
-
 }
