@@ -2,18 +2,19 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "deployment"]
-  pull_request:
-    branches: [ "deployment" ]
+    branches: [ "main" ,"deployment"]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
       
+    - name: Switch to deployment branch
+      run: git checkout -B deployment
+      if: github.ref == 'refs/heads/main'
+
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag my-image-name:latest
